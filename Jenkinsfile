@@ -1,7 +1,7 @@
 node {
     def mvnHome
     stage('Preparation') {
-        git clone "git@github.com:dwsaker/configserver.git"
+        git 'https://github.com/dwsaker/configserver.git'
         mvnHome = tool 'M2_HOME'
     }
     stage('Build') {
