@@ -1,5 +1,8 @@
 node {
     def mvnHome
+    def prefix = "us-central1-docker.pkg.dev/sensor-project-334918/ostock"
+    def artifactId = "configserver"
+    def version = "latest"
     stage('Preparation') {
         git 'https://github.com/dwsaker/configserver.git'
         mvnHome = tool 'M2_HOME'
@@ -19,10 +22,10 @@ node {
         archiveArtifacts 'configserver/target/*.jar'
     }
     stage('Build image') {
-        sh "'${mvnHome}/bin/mvn' -Ddocker.image.prefix=us-central1-docker.pkg.dev/sensor-project-334918/ostock -Dproject.artifactId=configserver -Ddocker.image.version=latest dockerfile:build"
+        sh "'${mvnHome}/bin/mvn' -Ddocker.image.prefix=${prefix} -Dproject.artifactId=${artifactId} -Ddocker.image.version=${version} dockerfile:build"
     }
     stage('Push image') {
-        sh "docker push us-central1-docker.pkg.dev/sensor-project-334918/ostock/configserver:latest"
+        sh "docker push ${prefix}/${artifactId}:${version}"
     }
     stage('Kubernetes deploy') {
         sh "kubectl apply -f configserver-service.yaml,configserver-deployment.yaml"

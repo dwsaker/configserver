@@ -67,7 +67,6 @@
 				<version>1.4.13</version>
 				<configuration>
 					<repository>${docker.image.prefix}/${project.artifactId}</repository>
-	                <tag>chapter12</tag>
 					<buildArgs>
 						<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
 					</buildArgs>
