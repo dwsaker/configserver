@@ -2,9 +2,9 @@ pipeline {
     agent any
     environment {
         PROJECT_ID = 'sensor-project-334918'
-        CLUSTER_NAME = ' sensor-project-dev-cluster'
+        CLUSTER_NAME = 'sensor-project-dev-cluster'
         LOCATION = 'us-central1-c'
-        CREDENTIALS_ID = 'sensor-project-334918'
+        CREDENTIALS_ID = 'gke-service-account'
         mvnHome = tool 'M2_HOME'
         REGISTRY = "us-central1-docker.pkg.dev"
         PREFIX = "us-central1-docker.pkg.dev/sensor-project-334918/ostock"
@@ -52,7 +52,7 @@ pipeline {
         stage('Deploy to GKE') {
             steps{
                 //sh "sed -i 's/hello:latest/hello:${env.BUILD_ID}/g' deployment.yaml"
-                step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
+                step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'configserver-deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
             }
         }
     }
