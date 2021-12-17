@@ -3,6 +3,7 @@ node {
     def prefix = "us-central1-docker.pkg.dev/sensor-project-334918/ostock"
     def artifactId = "configserver"
     def version = "latest"
+    def REGISTRY_USER = credentials('sensor-project-334918	')
     stage('Preparation') {
         git 'https://github.com/dwsaker/configserver.git'
         mvnHome = tool 'M2_HOME'
@@ -25,7 +26,9 @@ node {
         sh "'${mvnHome}/bin/mvn' -Ddocker.image.prefix=${prefix} -Dproject.artifactId=${artifactId} -Ddocker.image.version=${version} dockerfile:build"
     }
     stage('Push image') {
-        sh "docker push ${prefix}/${artifactId}:${version}"
+        docker.withRegistry("", "${REGISTRY_USER}") {
+            dockerImage.push "${prefix}/${artifactId}:${version}"
+        }
     }
     stage('Kubernetes deploy') {
         sh "kubectl apply -f configserver-service.yaml,configserver-deployment.yaml"
