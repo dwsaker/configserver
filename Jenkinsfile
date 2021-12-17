@@ -1,5 +1,7 @@
 node {
     def mvnHome
+    def project = "sensor-project-334918"
+    def registry = "us-central1-docker.pkg.dev"
     def prefix = "us-central1-docker.pkg.dev/sensor-project-334918/ostock"
     def artifactId = "configserver"
     def version = "latest"
@@ -26,8 +28,10 @@ node {
         sh "'${mvnHome}/bin/mvn' -Ddocker.image.prefix=${prefix} -Dproject.artifactId=${artifactId} -Ddocker.image.version=${version} dockerfile:build"
     }
     stage('Push image') {
-        docker.withRegistry("", "${REGISTRY_USER}") {
-            dockerImage.push "${prefix}/${artifactId}:${version}"
+        withCredentials([file(credentialsId: 'sensor-project-334918', variable: 'GC_KEY')]) {
+            sh("gcloud auth activate-service-account --key-file=${GC_KEY}")
+            sh("gcloud auth configure-docker ${registry}")
+            sh("docker push ${prefix}/${artifactId}:${version}")
         }
     }
     stage('Kubernetes deploy') {
