@@ -3,7 +3,7 @@ node {
     def prefix = "us-central1-docker.pkg.dev/sensor-project-334918/ostock"
     def artifactId = "configserver"
     def version = "latest"
-    def REGISTRY_USER = credentials('sensor-project-334918	')
+    def REGISTRY_USER = credentials('sensor-project-334918')
     stage('Preparation') {
         git 'https://github.com/dwsaker/configserver.git'
         mvnHome = tool 'M2_HOME'
